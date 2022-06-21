@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewpoiny" content="width-device-width, initial-scale=1.0"/>
+        <title> TDA DEMO </title>
+        <link rel="stylesheet" href="css\index.css" />  
+        
+    </head>
+    <body>
+        <div class="box"></div>
+        <!--头部的盒子-->
+        <header>
+            <h1>
+                <p align="left">TDA DEMO - RipsComplex</p>
+            </h1>
+            <h2>Peng Yuhan  6/2022</h2>
+        </header>
+        <script src="js\flexible.js"></script>
+    </body>
+    <section class="mainbox">
+        <div class="choice">
+            <script>
+			
+                // 获取元素内容
+                function testSubmit(){
+                    console.log(document.getElementById('radius_range').checked);
+                    console.log(document.getElementById('radius_input').checked);
+                    console.log(document.getElementById('radius_range_value').value);     
+                    console.log(document.getElementById('radius_input_value').value);    
+                    draw() 
+                }
+            </script>    
+            <form id="myform">
+                <font size="3">
+                    <input type='radio' name="radius" value="radius" checked="checked" id="radius_range"><label for="radius"> Range</label><br>
+                    Radius ε <input type="range" id="radius_range_value" oninput="change_value()" onchange="change_value()" max="500" min="0" value="50">
+                    <span id="value">50</span><br>
+                    OR<br>
+                    <input type='radio' name="radius" value="radius" id="radius_input"><label for="radius"> Input</label><br>
+                    Radius ε <input type="text" id="radius_input_value"><br>
+                    <br>
+                    Upload Document(.txt)<input type="file" id="file" onchange="show()">
+
+                    <script type='text/javascript'>
+                        function change_value() {
+                        var value = document.getElementById('radius_range_value').value ;
+                        document.getElementById('value').innerHTML = value;
+                        draw() 
+                        }
+                    </script>
+
+                    <script>
+                        function show()
+                        {
+                            var reader = new FileReader();
+                            reader.onload = function() 
+                            {
+                                //alert(this.result)
+                                data.value=this.result
+                            }
+                            var f = document.getElementById("file").files[0];
+                            reader.readAsText(f);
+                        }
+                    </script>
+                    <br><br>
+                    <textarea id="data" name="data" rows="10" cols="40"></textarea><br><br>
+                    <input type="reset" value="Reset"><br/>
+                    <input type="button" id="button" value='Submit' onClick=testSubmit()></button>
+                </font>
+
+            </form>
+
+        </div>
+        <div class="blank"></div>
+        <div class="graph">
+            <canvas id = 'canvas1' width="900" height="600"></canvas>
+            </canvas>
+            <script>
+
+            </script>
+            <script type="text/javascript">
+                function draw(){
+                    var canvas1 = document.querySelector("#canvas1")
+                    var ctx = canvas1.getContext('2d')
+                    var data_input = document.getElementById("data").value
+                    var arrList = data_input.split(",")
+                    var arr = arrList.map(Number)
+                    if (document.getElementById('radius_range').checked == true){
+                    var radius = document.getElementById('value').innerHTML
+                    }else{var radius = document.getElementById('radius_input_value').value}
+                    console.log(radius)
+                    ctx.beginPath()
+                    ctx.rect(0,0,800,600)
+                    ctx.fillStyle = '#fff'
+                    ctx.fill()
+                    ctx.closePath()
+
+
+                    for(var i = 0; i < arr.length/2; i++){
+                        var x = arr[i]
+                        var y = arr[i+arr.length/2]-200
+                        var x_next = arr[i+1]
+                        var y_next = arr[1+i+arr.length/2]-200
+                        // draw balls
+                        ctx.beginPath()
+                        ctx.fillStyle = 'rgba(193,203,215,0.7)'
+                        ctx.arc(x,y,radius/5,0,2*Math.PI)
+                        ctx.fill()
+                        ctx.strokeStyle = 'rgba(193,203,215,0.7)'
+                        ctx.stroke()
+                        if(i==arr.length/2 - 1){
+                            ctx.moveTo(arr[0],arr[arr.length/2]-200)
+                        }else{
+                            ctx.moveTo(x_next,y_next)
+                        }       
+                        ctx.closePath() 
+                    }
+                    
+                    // draw lines
+                    for (var i = 0; i < arr.length/2; i++){
+                        var x = arr[i]
+                        var y = arr[i+arr.length/2]-200
+                        var x_next = arr[i+1]
+                        var y_next = arr[1+i+arr.length/2]-200
+                        var neighborx = new Array()
+                        var neighbory = new Array()
+                        //one simplices
+                        for(var j = i+1; j<arr.length/2; j++){
+                            var nei_x = arr[j]
+                            var nei_y = arr[j+arr.length/2]-200
+                            var distance = Math.sqrt((nei_x - x)*(nei_x - x) + (nei_y-y)*(nei_y-y))
+                            
+                            if (distance <= 2 * radius/5){
+                                neighborx.push(nei_x)
+                                neighbory.push(nei_y)
+                                ctx.beginPath()
+                                ctx.moveTo(x,y)
+                                ctx.lineTo(nei_x,nei_y)
+                                ctx.strokeStyle = 'rgba(101,101,101)'
+                                ctx.stroke()
+                                ctx.moveTo(x,y)
+                                ctx.closePath()
+                            }
+                        }
+                        
+                        // two simplices
+                        for (var a = 0; a < neighborx.length; a++){
+                            var neighbor_x = neighborx[a]
+                            var neighbor_y = neighbory[a]
+                            var neighborx2 = new Array()
+                            var neighbory2 = new Array()
+                            for(var b = a+1; b<neighborx.length; b++){
+                                var new_nei_x = neighborx[b]
+                                var new_nei_y = neighbory[b]
+                                var distance = Math.sqrt((new_nei_x - neighbor_x)*(new_nei_x - neighbor_x) + (new_nei_y-neighbor_y)*(new_nei_y-neighbor_y))
+                                if (distance <= 2 * radius/5){
+                                neighborx2.push(new_nei_x)
+                                neighbory2.push(new_nei_y)
+                                ctx.beginPath()
+                                ctx.moveTo(neighbor_x,neighbor_y)
+                                ctx.lineTo(x,y)
+                                ctx.lineTo(new_nei_x,new_nei_y)
+                                
+                                ctx.strokeStyle = 'rgba(101,101,101)'
+                                ctx.fillStyle = 'rgba(101,101,101,0.5)'
+                                ctx.stroke()
+                                ctx.fill()
+                                ctx.moveTo(neighbor_x,neighbor_y)
+                                ctx.closePath()
+                                }
+                            }
+                            // three simplices
+                            for (var p = 0; p < neighborx2.length; p++){
+                                var second_nei_x = neighborx2[p]
+                                var second_nei_y = neighbory2[p]
+                                for (var q = p+1; p < neighborx2.length; p++){
+                                    var third_nei_x = neighborx2[q]
+                                    var third_nei_y = neighbory2[q]
+                                    var distance1 = Math.sqrt((third_nei_x - second_nei_x)*(third_nei_x - second_nei_x) + (third_nei_y - second_nei_y)*(third_nei_y - second_nei_y))
+                                    var distance2 = Math.sqrt((third_nei_x - x)*(third_nei_x - x) + (third_nei_y - y)*(third_nei_y - y))
+                                    var distance3 = Math.sqrt((second_nei_x - x)*(second_nei_x - x) + (second_nei_y - y)*(second_nei_y - y))
+                                    if ((distance1 <= 2 * radius/5) &&(distance2 <= 2 * radius/5)&&(distance3 <= 2 * radius/5)){
+                                        
+                                        ctx.beginPath()
+                                        ctx.moveTo(second_nei_x,second_nei_y)
+                                        ctx.lineTo(third_nei_x,third_nei_y)
+                                        ctx.lineTo(neighbor_x,neighbor_y)
+                                        ctx.strokeStyle = 'rgba(101,101,101)'
+                                        ctx.fillStyle = 'rgba(101,101,101)'
+                                        ctx.stroke()
+                                        ctx.fill()
+
+                                        ctx.moveTo(x,y)
+                                        ctx.lineTo(third_nei_x,third_nei_y)
+                                        ctx.lineTo(neighbor_x,neighbor_y)
+                                        ctx.strokeStyle = 'rgba(101,101,101)'
+                                        ctx.fillStyle = 'rgba(101,101,101)'
+                                        ctx.stroke()
+                                        ctx.fill()
+
+                                        ctx.moveTo(second_nei_x,second_nei_y)
+                                        ctx.lineTo(x,y)
+                                        ctx.lineTo(neighbor_x,neighbor_y)
+                                        ctx.strokeStyle = 'rgba(101,101,101)'
+                                        ctx.fillStyle = 'rgba(101,101,101)'
+                                        ctx.stroke()
+                                        ctx.fill()
+
+                                        ctx.moveTo(second_nei_x,second_nei_y)
+                                        ctx.lineTo(third_nei_x,third_nei_y)
+                                        ctx.lineTo(x,y)
+                                        ctx.strokeStyle = 'rgba(101,101,101)'
+                                        ctx.fillStyle = 'rgba(101,101,101)'
+                                        ctx.stroke()
+                                        ctx.fill()
+                                        
+                                        ctx.closePath()
+                                    }
+                                }
+                            }
+                        }  
+                    }
+
+
+                }
+
+            </script>
+        </div>
+    </section>
+</html>

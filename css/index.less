@@ -1,0 +1,68 @@
+//css 初始化
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+header{
+    position: relative;
+    height: 1rem;
+    background:url(../head.png)
+    no-repeat;
+    background-size: 100% 100%;
+
+    h1{
+        font-size: .7018rem;
+        color: #fff;
+        line-height: 1rem;
+    }
+    h2{
+        position:absolute;
+        right:0.2632rem;
+        top: 0;
+        line-height: 1.4737rem;
+        color:#050A30;
+        font-size: .2632rem;
+    }
+}
+.mainbox{
+    display: flex;
+    min-width: 1024px;
+    max-width: 2736px;
+    margin: 0 auto;
+    background-color: white;
+    padding: .0877rem .0877rem 0;
+    .column{
+        flex:1;
+        &:nth-child(2) {
+            flex: 3;
+        }
+    }
+    
+    .choice{
+        position: relative;
+        display: flex;
+        height:12.2807rem;
+        width:5.2632rem;
+        padding: .1316rem .1316rem .3509rem;
+        border: 1px solid #050A30;
+        margin-bottom: .1316rem;
+    }
+    .blank{
+        position: relative;
+        display: flex;
+        height:12.2807rem;
+        width:.0439rem;
+        padding: .1316rem .1316rem .3509rem;
+        margin-bottom: .1316rem;
+    }
+    .graph{
+        position: relative;
+        display: flex;
+        height:12.2807rem;
+        width:17.5439rem;
+        padding: .1316rem .1316rem .3509rem ;
+        border: 1px solid #050A30;
+        margin-bottom: .1316rem;
+    }
+}
