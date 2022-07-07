@@ -5,6 +5,8 @@ NOTE:
 
 The data in txt should be in the form of x_1,x_2,x_3,x_4,...,y_1,y_2,y_3,y_4,...
 
+The file "data_js" is an example of the input values
+
 You can change the value of radius/x_value/y_value depends on your data!
 
 ![image](https://user-images.githubusercontent.com/102588357/174856902-28872ede-6325-4179-847f-d8dd1294c715.png)
